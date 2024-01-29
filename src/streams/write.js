@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs';
 import path from 'path';
-import { fileURLToPath } from 'node:url';
 import { stdin } from 'node:process';
+import { getDir } from '../utils.js';
 
 const dir = getDir(import.meta.url);
 const pathToWrite = path.join(dir, './files/fileToWrite.txt' );
