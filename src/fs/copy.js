@@ -7,7 +7,12 @@ const src = path.join(dir, 'files');
 const target = path.join(dir, 'files_copy');
 
 async function copyDir(src, dest) {
-    let items = await readdir(src, { recursive: true, withFileTypes: true });
+    let items;
+    try {
+        items = await readdir(src, { recursive: true, withFileTypes: true });
+    } catch (err) {
+        throw new Error('FS operation failed: directory not found');
+    } 
 
     for (let item of items) {
         let srcPath = path.join(item.path, item.name);
@@ -15,8 +20,12 @@ async function copyDir(src, dest) {
         let destDir = path.dirname(destPath);
         
         if (item.isFile()) {
-            await mkdir(destDir, { recursive: true })
-            await copyFile(srcPath, destPath);
+            try {
+                await mkdir(destDir);
+                await copyFile(srcPath, destPath);
+            } catch (err) {
+                throw new Error('FS operation failed: folder already exists');
+            } 
         }
     }
 }
