@@ -14,15 +14,26 @@ async function copyDir(src, dest) {
         throw new Error('FS operation failed: directory not found');
     } 
 
+    try {
+        await mkdir(dest);
+    } catch (err) {
+        throw new Error('FS operation failed: folder already exists');
+    } 
+
     for (let item of items) {
+        console.log(item);
         let srcPath = path.join(item.path, item.name);
-        let destPath = srcPath.replace(src, dest);
-        let destDir = path.dirname(destPath);
+        let destPath = path.join(dest, item.name);
         
         if (item.isFile()) {
             try {
-                await mkdir(destDir);
                 await copyFile(srcPath, destPath);
+            } catch (err) {
+                throw new Error('FS operation failed: file already exists');
+            } 
+        } else {
+            try {
+                await copyDir(srcPath, destPath);
             } catch (err) {
                 throw new Error('FS operation failed: folder already exists');
             } 
