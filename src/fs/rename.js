@@ -6,9 +6,10 @@ const wrong = path.join(getDir(import.meta.url), 'files','wrongFilename.txt');
 const proper = path.join(getDir(import.meta.url), 'files','properFilename.md');
 
 const rename = async () => {
-  access(proper).then(()=>{
-		throw new Error('FS operation failed: file already exists')
-	})
+	try {
+		await access(proper).then(()=>{
+			throw new Error('FS operation failed: file already exists')})
+	} catch (err){}
 
     try {
         await fs.rename( wrong, proper);
