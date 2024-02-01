@@ -1,15 +1,15 @@
-import fs, {access} from 'fs/promises';
+import fs from 'fs/promises';
 import path from 'path';
+import { existsSync } from 'fs';
 import { getDir } from '../utils.js';
 
 const wrong = path.join(getDir(import.meta.url), 'files','wrongFilename.txt');
 const proper = path.join(getDir(import.meta.url), 'files','properFilename.md');
 
 const rename = async () => {
-	try {
-		await access(proper).then(()=>{
-			throw new Error('FS operation failed: file already exists')})
-	} catch (err){}
+	if (existsSync(proper)) {
+    throw Error("FS operation failed: file already exists");
+  }
 
     try {
         await fs.rename( wrong, proper);
